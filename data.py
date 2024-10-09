@@ -1,6 +1,7 @@
 import argparse
 import json
 import requests
+import socket, struct
 
 HEADERS = {
     'Content-Type': 'application/json'
@@ -9,7 +10,7 @@ HEADERS = {
 def build_args():
     parser = argparse.ArgumentParser('data')
     parser.add_argument('endpoint', type=str, default='fortigate', nargs='?', help='The endpoint to query data from')
-    parser.add_argument('size', type=int, default=2, nargs='?', help='The number of logs to query')
+    parser.add_argument('size', type=int, default=1, nargs='?', help='The number of logs to query')
     return parser.parse_args()
 
 
@@ -33,11 +34,20 @@ def send_query(query, endpoint):
 
     return requests.get(uri, headers=HEADERS, data=query).json()
 
+def IP_to_num(ip):
+    return struct.unpack("!L", socket.inet_aton(ip))[0]
+
+def num_to_IP(num):
+    return socket.inet_ntoa(struct.pack("!L", num))
+
 def filter_res(res):
     data = []
 
     for log in res['hits']['hits']: # HOW TO CHANGE STRINGS INTO MEANINGFUL NUMBERS FOR K-MEANS??
         log.pop('blahblah', None) # CHANGE THIS TO SELECT NECESSARY INSTEAD OF REMOVE UNNECESSARY
+        log['_source']['srcip'] = IP_to_num(log['_source']['srcip'])
+        log['_source']['dstip'] = IP_to_num(log['_source']['dstip'])
+        log['_source']['host'] = IP_to_num(log['_source']['host'])
         data.append(log)
     
     return data
@@ -46,6 +56,7 @@ def main(args):
     query = make_query(args.size)
 
     res = send_query(query, args.endpoint)
+    print(res)
 
     #https://stackoverflow.com/questions/67745643/select-specific-keys-inside-a-json-using-python
     #https://stackoverflow.com/questions/20638006/convert-list-of-dictionaries-to-a-pandas-dataframe/20638258#20638258
@@ -53,7 +64,7 @@ def main(args):
     data = filter_res(res)
 
     for datum in data:
-        print(json.dump(datum, indent=2))
+        print(json.dumps(datum, indent=2))
 
     return
 
