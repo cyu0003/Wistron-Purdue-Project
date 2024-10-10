@@ -2,9 +2,11 @@ import argparse
 import os
 import json
 import requests
-import socket, struct
+import matplotlib.pyplot as plt
 import pandas as pd
+from sklearn import preprocessing
 from sklearn.cluster import KMeans
+from sklearn.decomposition import PCA
 import ipaddress
 
 action_to_num = {
@@ -16,7 +18,7 @@ action_to_num = {
     "server-rst": 5,
     "timeout": 6,
     "dns": 7,
-    "ip_conn": 8
+    "ip-conn": 8
 }
 
 num_to_action = {
@@ -28,7 +30,7 @@ num_to_action = {
     5: "server-rst",
     6: "timeout",
     7: "dns",
-    8: "ip_conn"
+    8: "ip-conn"
 }
 
 num_to_proto = {
@@ -69,16 +71,18 @@ def send_query(query, endpoint):
     return requests.get(uri, headers=HEADERS, data=query).json()
 
 def IP_to_num(ip):
-    return struct.unpack("!L", socket.inet_aton(ip))[0]
+    if ':' in ip:
+        print('has ipv6')
+    return int(ipaddress.ip_address(ip))
 
 def num_to_IP(num):
-    return socket.inet_ntoa(struct.pack("!L", num))
+    return str(ipaddress.ip_address(num))
 
+#FORTIGATE ONLY
 def filter_logs(logs):
     data = []
 
     for log in logs: # HOW TO CHANGE STRINGS INTO MEANINGFUL NUMBERS FOR K-MEANS??
-        print('current id: ' + log['_id'])
         source = log['_source']
         datum = {
             "id": log['_id'],
@@ -106,7 +110,6 @@ def print_data(data):
 
 def main(args):
     os.remove('temp.txt')
-    print(args.verbose)
     query = make_query(args.size)
 
     res = send_query(query, args.endpoint)
@@ -129,16 +132,36 @@ def main(args):
     
     df = pd.DataFrame(data)
     df = df.drop("id", axis='columns')
-
+    normalized_df=(df-df.mean())/df.std()
     if (args.verbose):
-        print(df)
+        print(df.head())
+        print(normalized_df.head())
     
-    kmeans = KMeans(n_clusters=2, init='k-means++', max_iter=300, random_state=0)
+    kmeans = KMeans(n_clusters=3, init='random', max_iter=500, random_state=0)
     kmeans.fit(df.values)
     df['cluster'] = kmeans.labels_
 
-    print(df)
+    pca = PCA(2)
+    pca_res = pca.fit_transform(df)
+    df['x'] = pca_res[:, 0]
+    df['y'] = pca_res[:, 1]
 
+    cluster0 = df[df['cluster'] == 0]
+    cluster1 = df[df['cluster'] == 1]
+    cluster2 = df[df['cluster'] == 2]
+
+    print(f'number of items in cluster 0: {len(cluster0)}')
+    print(f'number of items in cluster 1: {len(cluster1)}')
+    print(f'number of items in cluster 2: {len(cluster2)}')
+
+    plt.scatter(cluster0['x'], cluster0['y'], label = 'C 0')
+    plt.scatter(cluster1['x'], cluster1['y'], label = 'C 1')
+    plt.scatter(cluster2['x'], cluster2['y'], label = 'C 2')
+    plt.legend()
+    plt.xlabel('x')
+    plt.ylabel('y')
+
+    plt.show()
     return
 
 if __name__ == '__main__':
