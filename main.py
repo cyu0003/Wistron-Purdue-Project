@@ -1,9 +1,9 @@
 import argparse
 
-from query import *
-from data import *
-from dicts import *
-from kmeans import *
+from utils.query import *
+from utils.data import *
+from utils.dicts import *
+from utils.kmeans import *
 
 def build_args():
     parser = argparse.ArgumentParser('data')

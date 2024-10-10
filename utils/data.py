@@ -1,6 +1,6 @@
 import ipaddress
 import json
-from dicts import *
+from utils.dicts import *
 
 def print_res(res):
     print(json.dumps(res, indent=2))
