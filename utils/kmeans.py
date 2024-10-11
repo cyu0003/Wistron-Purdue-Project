@@ -5,13 +5,13 @@ from sklearn.decomposition import PCA
 
 def make_df(data):
     df = pd.DataFrame(data)
-    return df.drop("id", axis='columns')
+    return df.drop('id', axis='columns')
 
 def normalize_df(df):
     return (df-df.mean())/df.std()
 
-def kmeans(df):
-    kmeans = KMeans(n_clusters=3, init='random', max_iter=500, random_state=0)
+def kmeans(df, c):
+    kmeans = KMeans(n_clusters=c, init='random', max_iter=500, random_state=0)
     kmeans.fit(df.values)
     df['cluster'] = kmeans.labels_
     return df

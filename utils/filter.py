@@ -16,16 +16,16 @@ def filter_logs(logs):
     for log in logs: # HOW TO CHANGE STRINGS INTO MEANINGFUL NUMBERS FOR K-MEANS??
         source = log['_source']
         datum = {
-            "id": log['_id'],
-            "srcip": IP_to_num(source['srcip']),
-            "dstip": IP_to_num(source['dstip']),
-            "srcport": int(source.get('srcport', -1)),
-            "dstport": int(source.get('dstport', -1)),
-            "sentpkt": int(source.get('sentpkt', 0)),
-            "rcvdpkt": int(source.get('rcvdpkt', 0)),
-            "duration": source.get('duration', 0),
-            "protocol": int(source['proto']),
-            "opresult": action_to_num[source['action']]
+            'id': log['_id'],
+            'srcip': IP_to_num(source['srcip']),
+            'dstip': IP_to_num(source['dstip']),
+            'srcport': int(source.get('srcport', -1)),
+            'dstport': int(source.get('dstport', -1)),
+            'sentpkt': int(source.get('sentpkt', 0)),
+            'rcvdpkt': int(source.get('rcvdpkt', 0)),
+            'duration': source.get('duration', 0),
+            'protocol': int(source['proto']),
+            'opresult': action_to_num[source['action']]
         }
         data.append(datum)
     

@@ -8,8 +8,9 @@ from utils.kmeans import *
 def build_args():
     parser = argparse.ArgumentParser('data')
     parser.add_argument('--endpoint', type=str, default='fortigate', nargs='?', help='The endpoint to query data from')
-    parser.add_argument('--size', type=int, default=1, nargs='?', help='The number of logs to query')
-    parser.add_argument('--verbose', default=False, action="store_true", help='Toggle for verbose output')
+    parser.add_argument('--size', type=int, default=2, nargs='?', help='The number of logs to query')
+    parser.add_argument('--clusters', type=int, default=2, nargs='?', help='The number of kmean clusters to use')
+    parser.add_argument('--verbose', default=False, action='store_true', help='Toggle for verbose output')
     return parser.parse_args()
 
 def main(args):
@@ -45,7 +46,7 @@ def main(args):
         print(normalized_df.head())
         print('-----------------------END OF NORMALIZED DATAFRAME-----------------------')
     
-    df = kmeans(df)
+    df = kmeans(df, args.clusters)
 
     visualize(df)
 
