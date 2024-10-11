@@ -7,7 +7,8 @@ action_to_num = {
     'server-rst': 5,
     'timeout': 6,
     'dns': 7,
-    'ip-conn': 8
+    'ip-conn': 8,
+    'blocked': 9
 }
 
 num_to_action = {
@@ -19,7 +20,8 @@ num_to_action = {
     5: 'server-rst',
     6: 'timeout',
     7: 'dns',
-    8: 'ip-conn'
+    8: 'ip-conn',
+    9: 'blocked'
 }
 
 num_to_proto = {

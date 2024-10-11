@@ -46,7 +46,7 @@ def main(args):
         print(normalized_df.head())
         print('-----------------------END OF NORMALIZED DATAFRAME-----------------------')
     
-    df = kmeans(df, args.clusters)
+    df = kmeans(normalized_df, args.clusters)
 
     visualize(df)
 
