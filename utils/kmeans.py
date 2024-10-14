@@ -15,19 +15,16 @@ def kmeans(df, c):
     df['cluster'] = kmeans.labels_
     return df
 
-def visualize(df):
+def visualize(df, c):
     pca = PCA(2)
     pca_res = pca.fit_transform(df)
     df['x'] = pca_res[:, 0]
     df['y'] = pca_res[:, 1]
 
-    cluster0 = df[df['cluster'] == 0]
-    cluster1 = df[df['cluster'] == 1]
-    cluster2 = df[df['cluster'] == 2]
+    for i in range(0, c):
+        cluster = df[df['cluster'] == i]
+        plt.scatter(cluster['x'], cluster['y'], label=f'Cluster {i}')
 
-    plt.scatter(cluster0['x'], cluster0['y'], label = 'C 0')
-    plt.scatter(cluster1['x'], cluster1['y'], label = 'C 1')
-    plt.scatter(cluster2['x'], cluster2['y'], label = 'C 2')
     plt.legend()
     plt.xlabel('x')
     plt.ylabel('y')

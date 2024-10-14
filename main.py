@@ -1,4 +1,5 @@
 import argparse
+import math
 
 from utils.query import *
 from utils.data import *
@@ -9,7 +10,6 @@ def build_args():
     parser = argparse.ArgumentParser('data')
     parser.add_argument('--endpoint', type=str, default='fortigate', nargs='?', help='The endpoint to query data from')
     parser.add_argument('--size', type=int, default=2, nargs='?', help='The number of logs to query')
-    parser.add_argument('--clusters', type=int, default=2, nargs='?', help='The number of kmean clusters to use')
     parser.add_argument('--verbose', default=False, action='store_true', help='Toggle for verbose output')
     return parser.parse_args()
 
@@ -34,6 +34,7 @@ def main(args):
         print()
     
     df = make_df(data)
+    c = int(math.sqrt(df.shape[0] / 2))
 
     id_col = df['id']
     df = df.drop('id', axis='columns')
@@ -49,9 +50,9 @@ def main(args):
         print(normalized_df.head())
         print('-----------------------END OF NORMALIZED DATAFRAME-----------------------')
     
-    df = kmeans(normalized_df, args.clusters)
+    df = kmeans(normalized_df, c)
 
-    visualize(df)
+    visualize(df, c)
 
     return
 
