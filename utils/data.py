@@ -6,8 +6,8 @@ def print_res(res):
     print(json.dumps(res, indent=2))
 
 def print_data(data):
-    data['srcip'] = num_to_IP(data['srcip'])
-    data['dstip'] = num_to_IP(data['dstip'])
+    #data['srcip'] = num_to_IP(data['srcip'])
+    #data['dstip'] = num_to_IP(data['dstip'])
     data['protocol'] = num_to_proto[data['protocol']]
     data['opresult'] = num_to_action[data['opresult']]
 
@@ -30,10 +30,10 @@ def filter_logs(logs):
         source = log['_source']
         datum = {
             'id': log['_id'],
-            'srcip': IP_to_num(source['srcip']),
-            'dstip': IP_to_num(source['dstip']),
-            'srcport': int(source.get('srcport', -1)),
-            'dstport': int(source.get('dstport', -1)),
+            #'srcip': IP_to_num(source['srcip']),
+            #'dstip': IP_to_num(source['dstip']),
+            'srcport': int(source.get('srcport', 0)),
+            'dstport': int(source.get('dstport', 0)),
             'sentpkt': int(source.get('sentpkt', 0)),
             'rcvdpkt': int(source.get('rcvdpkt', 0)),
             'duration': source.get('duration', 0),
