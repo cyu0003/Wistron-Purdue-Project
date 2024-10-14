@@ -17,8 +17,8 @@ def filter_logs(logs):
         source = log['_source']
         datum = {
             'id': log['_id'],
-            'srcip': IP_to_num(source['srcip']),
-            'dstip': IP_to_num(source['dstip']),
+            #'srcip': IP_to_num(source['srcip']),
+            #'dstip': IP_to_num(source['dstip']),
             'srcport': int(source.get('srcport', 0)),
             'dstport': int(source.get('dstport', 0)),
             'sentpkt': int(source.get('sentpkt', 0)),
