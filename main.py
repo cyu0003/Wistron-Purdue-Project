@@ -1,4 +1,5 @@
 import argparse
+import json
 import math
 
 from utils.query import *
@@ -23,6 +24,9 @@ def main(args):
         print_res(res)
         print('-----------------------END OF RESPONSE-----------------------')
         print()
+
+    with open('data.json', 'w') as f:
+        json.dump(res, f)
 
     data = filter_logs(res['hits']['hits'])
 
@@ -53,6 +57,10 @@ def main(args):
     df = kmeans(normalized_df, c)
 
     visualize(df, c)
+
+    df['id'] = id_col
+    sorted = df.sort_values('cluster')
+    sorted.to_csv('sorted.csv')
 
     return
 
