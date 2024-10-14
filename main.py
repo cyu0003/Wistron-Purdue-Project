@@ -34,6 +34,9 @@ def main(args):
         print()
     
     df = make_df(data)
+
+    id_col = df['id']
+    df = df.drop('id', axis='columns')
     
     normalized_df = normalize_df(df)
 

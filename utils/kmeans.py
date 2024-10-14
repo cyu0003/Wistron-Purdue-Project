@@ -4,8 +4,7 @@ from sklearn.cluster import KMeans
 from sklearn.decomposition import PCA
 
 def make_df(data):
-    df = pd.DataFrame(data)
-    return df.drop('id', axis='columns')
+    return pd.DataFrame(data)
 
 def normalize_df(df):
     return (df-df.mean())/df.std()
