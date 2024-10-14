@@ -11,7 +11,7 @@ def normalize_df(df):
     return (df-df.mean())/df.std()
 
 def kmeans(df, c):
-    kmeans = KMeans(n_clusters=c, init='random', max_iter=500, random_state=0)
+    kmeans = KMeans(n_clusters=c, init='k-means++', max_iter=500, random_state=0)
     kmeans.fit(df.values)
     df['cluster'] = kmeans.labels_
     return df
